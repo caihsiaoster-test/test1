@@ -16,6 +16,8 @@ const int INF = 99999;
 double min1 = 9999;
 double max1 = 0;
 
+// okay, that is it.
+
 void display(int** dis, const int& height_l, const int& width_l) {
   double range = max1 - min1;
   for (int j = 0; j < height_l; ++j) {
@@ -26,13 +28,13 @@ void display(int** dis, const int& height_l, const int& width_l) {
       dis[j][k] = dis[j][k] / range * 255;
     }
   }
-    
+
   IplImage *out_img = cvCreateImage(cvSize(width_l, height_l), 8, 1);
   for (int j = 0; j < height_l; ++j) {
     for (int k = 0; k < width_l; ++k) {
       *PIXEL(out_img, k, j) = (int)dis[j][k];
     }
-  } 
+  }
 
   cvNamedWindow("Output",1);
   cvShowImage("Output", out_img);
@@ -75,7 +77,7 @@ void stereo1D(IplImage* left_image, IplImage* right_image,
   //                                         //
   //                                         //
   // ********** Problem 1-2 END ************ //
- 
+
   // Releas memory
   for (int i = 0; i < width_l+1; ++i) {
     delete[] cost[i];
@@ -83,12 +85,12 @@ void stereo1D(IplImage* left_image, IplImage* right_image,
   }
   delete[] cost;
   delete[] match;
-  
+
 }
 
 int main(int argc, char** argv) {
   if (argc != 3) {
-    cerr << "usage: "<< argv[0] << "   [left image file]  [right image file]"<<endl; 
+    cerr << "usage: "<< argv[0] << "   [left image file]  [right image file]"<<endl;
     return 1;
   }
   IplImage *left_image = cvLoadImage(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
@@ -97,12 +99,12 @@ int main(int argc, char** argv) {
     cerr<< "Error reading input image!"<< endl;
     return 1;
   }
-  
+
   int width_l = left_image->width;
   int width_r = right_image->width;
   int height_l = left_image->height;
   int height_r = right_image->height;
-  
+
   // initialize disparity table
   int **dis = new int*[height_l];
   for (int i = 0; i < height_l; ++i) {
@@ -114,7 +116,7 @@ int main(int argc, char** argv) {
       dis[j][k] = 0;
     }
   }
-  
+
   for (int i = 0; i < height_l; ++i) {
     stereo1D(left_image, right_image, i, dis[i]);
   }
@@ -126,7 +128,7 @@ int main(int argc, char** argv) {
   // store the disparity map in "dis"         //
   //                                          //
   // ********** Problem 3 END *************** //
-  
+
   // Display and store the Disparity Map as a PNG file
   display(dis, height_l, width_l);
 
@@ -149,15 +151,15 @@ int main(int argc, char** argv) {
   //                                               //
   // ********** Problem 6 END ************         //
 
-  // release memory  
+  // release memory
   cvReleaseImage(&left_image);
   cvReleaseImage(&right_image);
 
   for (int i = 0; i < height_l; ++i) {
     delete[] dis[i];
   }
- 
+
   delete[] dis;
-  
+
   return 0;
 }

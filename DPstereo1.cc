@@ -25,12 +25,14 @@ int main(int argc, char** argv) {
     cerr<< "Error reading input image!"<< endl;
     return 1;
   }
-  
+
+  // is this a good thing to go?
+
   int width_l = left_image->width;
   int width_r = right_image->width;
   int height_l = left_image->height;
   int height_r = right_image->height;
-  
+
   // initialize cost matrix
   double **cost = new double*[width_l+1];
   for (int i = 0; i < width_l+1; ++i) {
@@ -41,16 +43,16 @@ int main(int argc, char** argv) {
   for (int i = 0; i < width_l+1; ++i) {
     match[i] = new int[width_r+1];
   }
-  
+
   // initialize disparity table
   int **dis = new int*[height_l];
   for (int i = 0; i < height_l; ++i) {
     dis[i] = new int[width_l];
   }
-  
+
   double min = 9999;
   double max = 0;
-  
+
   for (int i = 0; i < height_l; ++i) {
     // Compute 1D disparity map between two vectors
     // using dynamic programming.
@@ -62,7 +64,7 @@ int main(int argc, char** argv) {
 	match[j][k] = 0;
       }
     }
-    
+
     // ********** Problem 1-3 START ********** //
 
 
@@ -70,7 +72,7 @@ int main(int argc, char** argv) {
     // ********** Problem 1-3 END ************ //
 
   }
-  
+
   // Display the Disparity Map
   double range = max - min;
   for (int j = 0; j < height_l; ++j) {
@@ -81,13 +83,13 @@ int main(int argc, char** argv) {
       dis[j][k] = dis[j][k] / range * 255;
     }
   }
-    
+
   IplImage *out_img = cvCreateImage(cvSize(width_l, height_l), 8, 1);
   for (int j = 0; j < height_l; ++j) {
     for (int k = 0; k < width_l; ++k) {
       *PIXEL(out_img, k, j) = (int)dis[j][k];
     }
-  } 
+  }
 
   cvNamedWindow("Output",1);
   cvShowImage("Output", out_img);
@@ -113,7 +115,7 @@ int main(int argc, char** argv) {
   //                                               //
   // ********** Problem 6 END ************         //
 
-  // release memory  
+  // release memory
   cvReleaseImage(&out_img);
   cvReleaseImage(&left_image);
   cvReleaseImage(&right_image);
@@ -128,6 +130,6 @@ int main(int argc, char** argv) {
   delete[] cost;
   delete[] match;
   delete[] dis;
-  
+
   return 0;
 }
